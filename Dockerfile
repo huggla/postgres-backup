@@ -7,4 +7,4 @@ COPY --from=pg /usr/local/bin/pg_dump* /usr/local/bin/
 COPY --from=pg /usr/local/lib /usr/local/lib
 COPY --from=pg /usr/lib/libldap* /usr/local/lib/
 COPY --from=pg /usr/lib/liblber* /usr/local/lib/
-COPY --from=pg /usr/lib/libsas12* /usr/local/lib/
+COPY --from=pg /usr/lib/libsasl2* /usr/local/lib/
