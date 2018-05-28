@@ -1,0 +1,12 @@
+if [ "$isFirstRun" == "true" ]
+then
+   cronVars="(set | /bin/grep "VAR_cron_")"
+   for cronVar in $cronVars
+   do
+      name=${cronVar%=}
+      cron=${cronVar#=}
+      echo "$cron /backup/scripts/$name" >> crontab
+   done
+   crontab -u $VAR_LINUX_USER crontab
+   /bin/rm crontab
+fi
