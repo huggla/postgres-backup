@@ -5,7 +5,7 @@ then
    for cronVar in $cronVars
    do
       name=${cronVar%=*}
-      cron=${cronVar#*=}
+      cron="$(removeSingleQuotes ${cronVar#*=})"
       echo "$cron /backup/scripts/$name" >> crontab
    done
    crontab -u $VAR_LINUX_USER crontab
