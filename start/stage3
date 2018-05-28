@@ -4,7 +4,7 @@ then
    cronVars="(set | /bin/grep "VAR_cron_")"
    for cronVar in $cronVars
    do
-      name=${cronVar%=*}
+      name=${cronVar%%=*}
       cron="$(removeSingleQuotes ${cronVar#*=})"
       echo "$cron /backup/scripts/$name" >> crontab
    done
