@@ -8,6 +8,7 @@ COPY --from=pg /usr/local/lib /usr/local/lib
 COPY --from=pg /usr/lib/libldap* /usr/local/lib/
 COPY --from=pg /usr/lib/liblber* /usr/local/lib/
 COPY --from=pg /usr/lib/libsasl2* /usr/local/lib/
+COPY ./backup/scripts /backup/scripts
 
 ENV VAR_LINUX_USER="postgres" \
     VAR_cron_weekdays="0 21 * * 1-5" \
