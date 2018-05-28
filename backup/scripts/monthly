@@ -1,0 +1,62 @@
+#!/bin/bash
+# MONTHLY BACKUPS (twelve cycling backups)
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+MONTH=`date +%b`
+BACKUPDIR="/mnt/sbkbackup/monthly/$MONTH"
+
+# Postgis
+db=( geodata )
+for i in "${db[@]}"
+do
+   pg_dump -U postgres -p 5432 -c -N 'public' -N '*_' --exclude-table-data='*.*_' -Z 9 $i > "$BACKUPDIR/$i.sql.gz"
+   pg_dump -U postgres -p 5432 -c -t 'layer_styles' -Z 9 $i > "$BACKUPDIR/$i-layer_styles.sql.gz"
+done
+pg_dumpall -h localhost -p 5432 -U postgres -w -v --globals-only | gzip -c > "$BACKUPDIR/postgresql-globals.sql.gz"
+
+# Geoserver
+tar -zcpf $BACKUPDIR/geoserver.tar.gz /etc/geoserver /etc/geoserver/data/gwc/geowebcache.xml
+
+# Qgis
+tar -zcpf $BACKUPDIR/qgis.tar.gz /usr/lib/cgi-bin
+
+# Www
+tar -zcpf $BACKUPDIR/www.tar.gz /var/www
+
+# Varnish configs
+tar -zcpf $BACKUPDIR/varnish.tar.gz /etc/varnish /etc/default/varnish*
+
+# Postgresql configs
+tar -zcpf $BACKUPDIR/postgresql.tar.gz /etc/postgresql/9.5/main
+
+# Pgpool configs
+tar -zcpf $BACKUPDIR/pgpool.tar.gz /usr/local/etc
+
+# System configs
+tar -zcpf $BACKUPDIR/system.tar.gz /etc/rc.local /etc/fstab /etc/sysctl.conf /etc/hosts
+
+# Php configs
+tar -zcpf $BACKUPDIR/php.tar.gz /etc/php5/fpm
+
+# Apache configs
+tar -zcpf $BACKUPDIR/apache.tar.gz /etc/apache2
+
+# Samba configs
+tar -zcpf $BACKUPDIR/samba.tar.gz /etc/samba
+
+# Wiki
+/usr/sbin/service mysql restart
+mysqldump --databases --user=wikiuser --password=iiT6aX40IrWGIX4m --add-drop-database wikidb | gzip > $BACKUPDIR/wikidb.sql.gz 
+
+# Mapfish configs
+tar -zcpf $BACKUPDIR/print-servlet.tar.gz /var/lib/tomcat7/webapps/print-servlet/*.yaml
+
+# Scripts and manually installed executables
+tar -zcpf $BACKUPDIR/usr-local-bin.tar.gz /usr/local/bin
+
+# Root crontab
+crontab -l > /root/crontablatest.txt
+tar -zcpf $BACKUPDIR/crontab.tar.gz /root/crontablatest.txt /root/schemalagda_gnome-schedule/*.txt /root/schemalagda_gnome-schedule/*.sh
+
+# Backup scripts
+tar -zcpf $BACKUPDIR/backupscripts.tar.gz /mnt/sbkbackup/backup_scripts
