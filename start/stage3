@@ -1,7 +1,7 @@
 if [ "$isFirstRun" == "true" ]
 then
    local IFS=$(echo -en "\n\b")
-   cronVars="(set | /bin/grep "VAR_cron_")"
+   cronVars="$(set | /bin/grep "VAR_cron_")"
    for cronVar in $cronVars
    do
       name=${cronVar%%=*}
