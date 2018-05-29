@@ -6,17 +6,17 @@
 
 writeCrontab(){
    local IFS=$(echo -en "\n\b")
-   local tmpDir="$(mktemp -d)"
+   local tmpFile="$(mktemp)"
    /bin/chown $VAR_LINUX_USER /backup/scripts
    cronVars="$(set | /bin/grep "VAR_cron_")"
    for cronVar in $cronVars
    do
       name=${cronVar%%=*}
       cron="$(removeSingleQuotes ${cronVar#*=})"
-      echo "$cron /backup/scripts/$name" >> "$tmpDir/crontab"
+      echo "$cron /backup/scripts/$name" >> "$tmpFile"
    done
-   /usr/bin/crontab -u $VAR_LINUX_USER "$tmpDir/crontab"
-   /bin/rm "$tmpDir/crontab"
+   /usr/bin/crontab -u $VAR_LINUX_USER "$tmpFile"
+   /bin/rm "$tmpFile"
    /usr/bin/crontab -u $VAR_LINUX_USER -l
 }
 
