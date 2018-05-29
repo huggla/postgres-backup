@@ -1,13 +1,26 @@
-if [ "$isFirstRun" == "true" ]
-then
+# Set in stage2:
+# -------------------------------------------
+# set -e +a +m +s +i -f
+# . /start/stage2.functions
+# VAR_*
+
+writeCrontab(){
    local IFS=$(echo -en "\n\b")
+   local tmpDir="$(mktemp -d)"
+   /bin/chown $VAR_LINUX_USER /backup/scripts
    cronVars="$(set | /bin/grep "VAR_cron_")"
    for cronVar in $cronVars
    do
       name=${cronVar%%=*}
       cron="$(removeSingleQuotes ${cronVar#*=})"
-      echo "$cron /backup/scripts/$name" >> crontab
+      echo "$cron /backup/scripts/$name" >> "$tmpDir/crontab"
    done
-   crontab -u $VAR_LINUX_USER crontab
-   /bin/rm crontab
+   /usr/bin/crontab -u $VAR_LINUX_USER "$tmpDir/crontab"
+   /bin/rm "$tmpDir/crontab"
+   /usr/bin/crontab -u $VAR_LINUX_USER -l
+}
+
+if [ "$isFirstRun" == "true" ]
+then
+   writeCrontab
 fi
