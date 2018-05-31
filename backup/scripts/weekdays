@@ -8,18 +8,26 @@ local IFS=$(echo -en "\n\b,")
 local schemas=""
 local tables=""
 local dumpCmd=""
+local blobs=""
+local clean=""
 for database in $VAR_DATABASES
 do
    dumpCmd="/usr/local/bin/pg_dump --host=$VAR_HOST --port=$VAR_PORT --username=$VAR_LINUX_USER --dbname=$database"
+   eval "clean=\$VAR_$database_cleanobjects"
+   if [ "$clean" == "yes" ]
+   then
+      dumbCmd="$dumpCmd --clean"
+   fi
    eval "schemas=\$VAR_$database_schemas"
    if [ -n "$schemas" ]
    then
-      if [ "$VAR_DUMP_BLOBS" == "yes" ]
-      then
-         dumpCmd="$dumpCmd --blobs"
-      fi
       for schema in $schemas
       do
+         eval "blobs=\$VAR_$database_$schema_dumpblobs"
+         if [ "$blobs" != "no" ]
+         then
+            dumpCmd="$dumpCmd --blobs"
+         fi
          eval "tables=\$VAR_$database_$schema_tables"
          if [ -n "$tables" ]
          then
