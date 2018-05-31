@@ -12,7 +12,9 @@ COPY ./start /start
 COPY ./backup/scripts /backup/scripts
 
 RUN ln /bin/busybox /usr/local/bin/tail \
+ && sleep 1 \
  && ln /bin/busybox /usr/local/bin/date \
+ && sleep 1 \
  && ln /bin/busybox /usr/local/bin/gzip
 
 ENV VAR_LINUX_USER="postgres" \
