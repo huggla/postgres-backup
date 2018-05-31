@@ -7,17 +7,23 @@ local backupdir="$VAR_BACKUP_DIR/weekdays/$day"
 local IFS=$(echo -en "\n\b,")
 local schemas=""
 local tables=""
-local dumpConst="/usr/local/bin/pg_dump -U $VAR_LINUX_USER -p $VAR_PORT"
 local dumpCmd=""
 for database in $VAR_DATABASES
 do
-   dumpCmd="$dumpConst  
+   dumpCmd="/usr/local/bin/pg_dump --host=$VAR_HOST --port=$VAR_PORT --username=$VAR_LINUX_USER --dbname=$database"
    eval "schemas=\$VAR_$database_schemas"
    if [ -n "$schemas" ]
-   for schema in $schemas
-   do
-      eval "tables=\$VAR_$database_$schema_tables"
-      for table in $tables
+   then
+      if [ "$VAR_DUMP_BLOBS" == "yes" ]
+      then
+         dumpCmd="$dumpCmd --blobs"
+      fi
+      for schema in $schemas
+      do
+         eval "tables=\$VAR_$database_$schema_tables"
+         if [ -n "$tables" ]
+         then
+            for table in $tables
       do
          /usr/local/bin/pg_dump -U $VAR_LINUX_USER -p $VAR_PORT -N 'public' -N '*_' --exclude-table-data='*.*_' -Z 9 $i > "$BACKUPDIR/$i.sql.gz"
    pg_dump -U postgres -p 5432 -c -t 'layer_styles' -Z 9 $i > "$BACKUPDIR/$i-layer_styles.sql.gz"
