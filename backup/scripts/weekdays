@@ -11,14 +11,25 @@ local dumpCmd=""
 local blobs=""
 local clean=""
 local format=""
+local jobs=""
 for database in $VAR_DATABASES
 do
+   dumpCmd="/usr/local/bin/pg_dump --host=$VAR_HOST --port=$VAR_PORT --username=$VAR_LINUX_USER --dbname=$database"
    eval "format=\$VAR_$database_format"
    if [ -z "$format" ]
    then
       format=$VAR_FORMAT
    fi
-   dumpCmd="/usr/local/bin/pg_dump --host=$VAR_HOST --port=$VAR_PORT --username=$VAR_LINUX_USER --dbname=$database --format=$format"
+   dumpCmd="$dumpCmd --format=$format"
+   if [ "$format" == "directory" ]
+   then
+      eval "jobs=\$VAR_$database_jobs"
+      if [ -z "$jobs" ]
+      then
+         jobs=$VAR_JOBS
+      fi
+      dumpCmd="$dumpCmd --jobs=$jobs"
+   fi
    eval "clean=\$VAR_$database_clean"
    if [ "$clean" != "no" ]
    then
@@ -27,36 +38,26 @@ do
          dumpCmd="$dumpCmd --clean"
       fi
    fi
-   
-   dumpCmd="/usr/local/bin/pg_dump --host=$VAR_HOST --port=$VAR_PORT --username=$VAR_LINUX_USER --dbname=$database --format=$format"
-
-
-   dumpCmd="$dumpCmd  
-   if [ "$VAR_FORMAT" == "directory" ]
-   then
-      dumpCmd="$dumpCmd --jobs=$VAR_JOBS"
-   fi
-   eval "clean=\$VAR_$database_cleanobjects"
-   if [ "$clean" == "yes" ]
-   then
-      dumbCmd="$dumpCmd --clean"
-   fi
+   eval "xschemas=\$VAR_$database_excludeschemas"
+   for xschema in $xschemas
+   do
+      dumpCmd="$dumpCmd --exclude-schema=$xschema"
+   done
    eval "schemas=\$VAR_$database_schemas"
-   if [ -n "$schemas" ]
-   then
-      for schema in $schemas
+   for schema in $schemas
+   do
+      dumpCmd="$dumpCmd --schema=$schema"
+      eval "xtables=\$VAR_$database_$schema_excludetables"
+      for xtable in $xtables
       do
-         eval "blobs=\$VAR_$database_$schema_dumpblobs"
-         if [ "$blobs" != "no" ]
-         then
-            dumpCmd="$dumpCmd --blobs"
-         fi
-         eval "tables=\$VAR_$database_$schema_tables"
-         if [ -n "$tables" ]
-         then
-            for table in $tables
+         dumpCmd="$dumpCmd --exclude-table=$xtable"
+      done
+      eval "tables=\$VAR_$database_$schema_tables"
+      for table in $tables
       do
-         /usr/local/bin/pg_dump -U $VAR_LINUX_USER -p $VAR_PORT -N 'public' -N '*_' --exclude-table-data='*.*_' -Z 9 $i > "$BACKUPDIR/$i.sql.gz"
+         dumpCmd="$dumpCmd --table=$table"
+      done
+            /usr/local/bin/pg_dump -U $VAR_LINUX_USER -p $VAR_PORT -N 'public' -N '*_' --exclude-table-data='*.*_' -Z 9 $i > "$BACKUPDIR/$i.sql.gz"
    pg_dump -U postgres -p 5432 -c -t 'layer_styles' -Z 9 $i > "$BACKUPDIR/$i-layer_styles.sql.gz"
 done
 pg_dumpall -h localhost -p 5432 -U postgres -w -v --globals-only | gzip -c > "$BACKUPDIR/postgresql-globals.sql.gz"
