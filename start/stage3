@@ -7,7 +7,11 @@
 writeCrontab(){
    local IFS=$(echo -en "\n\b")
    local tmpFile="$(mktemp)"
-   /bin/chown $VAR_LINUX_USER /backup/scripts
+   local -
+   set +f
+   /bin/chown $VAR_LINUX_USER /backup/scripts/*
+   /bin/chmod u+x,o= /backup/scripts/*
+   set -f
    cronVars="$(set | /bin/grep "VAR_cron_")"
    for cronVar in $cronVars
    do
