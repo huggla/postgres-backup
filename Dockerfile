@@ -22,6 +22,7 @@ ENV VAR_LINUX_USER="postgres" \
     VAR_BACKUP_DIR="/pgbackup" \
     VAR_DATABASES="postgres" \
     VAR_PORT="5432" \
-    VAR_DUMP_BLOBS="yes"
+    VAR_FORMAT="directory" \
+    VAR_JOBS="1"
 
 USER starter
