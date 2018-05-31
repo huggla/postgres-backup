@@ -10,9 +10,32 @@ local tables=""
 local dumpCmd=""
 local blobs=""
 local clean=""
+local format=""
 for database in $VAR_DATABASES
 do
-   dumpCmd="/usr/local/bin/pg_dump --host=$VAR_HOST --port=$VAR_PORT --username=$VAR_LINUX_USER --dbname=$database"
+   eval "format=\$VAR_$database_format"
+   if [ -z "$format" ]
+   then
+      format=$VAR_FORMAT
+   fi
+   dumpCmd="/usr/local/bin/pg_dump --host=$VAR_HOST --port=$VAR_PORT --username=$VAR_LINUX_USER --dbname=$database --format=$format"
+   eval "clean=\$VAR_$database_clean"
+   if [ "$clean" != "no" ]
+   then
+      if [ "$clean" == "yes" ] || [ "$VAR_CLEAN" == "yes" ]
+      then
+         dumpCmd="$dumpCmd --clean"
+      fi
+   fi
+   
+   dumpCmd="/usr/local/bin/pg_dump --host=$VAR_HOST --port=$VAR_PORT --username=$VAR_LINUX_USER --dbname=$database --format=$format"
+
+
+   dumpCmd="$dumpCmd  
+   if [ "$VAR_FORMAT" == "directory" ]
+   then
+      dumpCmd="$dumpCmd --jobs=$VAR_JOBS"
+   fi
    eval "clean=\$VAR_$database_cleanobjects"
    if [ "$clean" == "yes" ]
    then
