@@ -12,7 +12,8 @@ COPY ./start /start
 COPY ./backup/scripts /backup/scripts
 
 RUN ln /bin/busybox /usr/local/bin/tail \
- && ln /bin/busybox /usr/local/bin/date
+ && ln /bin/busybox /usr/local/bin/date \
+ && ln /bin/busybox /usr/local/bin/gzip
 
 ENV VAR_LINUX_USER="postgres" \
     VAR_FINAL_COMAND="/usr/local/bin/tail -f /dev/null" \
@@ -24,6 +25,7 @@ ENV VAR_LINUX_USER="postgres" \
     VAR_PORT="5432" \
     VAR_FORMAT="directory" \
     VAR_JOBS="1" \
-    VAR_COMPRESS="9"
+    VAR_COMPRESS="9" \
+    VAR_DUMP_GLOBALS="yes"
 
 USER starter
