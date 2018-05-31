@@ -11,7 +11,8 @@ COPY --from=pg /usr/lib/libsasl2* /usr/local/lib/
 COPY ./start /start
 COPY ./backup/scripts /backup/scripts
 
-RUN ln /bin/busybox /usr/local/bin/tail
+RUN ln /bin/busybox /usr/local/bin/tail \
+ && ln /bin/busybox /usr/local/bin/date
 
 ENV VAR_LINUX_USER="postgres" \
     VAR_FINAL_COMAND="/usr/local/bin/tail -f /dev/null" \
