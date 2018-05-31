@@ -3,18 +3,19 @@
 set -e +a +m +s +i -f
 
 local day="$(/usr/local/bin/date +%a)"
-local backupdir="$VAR_BACKUP_DIR/weekdays/$day"
+local backupDir="$VAR_BACKUP_DIR/weekdays/$day"
 local IFS=$(echo -en "\n\b,")
+local xschemas=""
 local schemas=""
+local xtables=""
 local tables=""
 local dumpCmd=""
-local blobs=""
 local clean=""
 local format=""
 local jobs=""
 for database in $VAR_DATABASES
 do
-   dumpCmd="/usr/local/bin/pg_dump --host=$VAR_HOST --port=$VAR_PORT --username=$VAR_LINUX_USER --dbname=$database"
+   dumpCmd="/usr/local/bin/pg_dump --host=$VAR_HOST --port=$VAR_PORT --username=$VAR_LINUX_USER --dbname=$database --file=$backupDir/$database --compress=$VAR_COMPRESS"
    eval "format=\$VAR_$database_format"
    if [ -z "$format" ]
    then
@@ -38,12 +39,20 @@ do
          dumpCmd="$dumpCmd --clean"
       fi
    fi
+   if [ "$VAR_SCHEMA_ONLY" == "yes" ]
+   then
+      dumpCmd="$dumpCmd --schema-only"
+   fi
    eval "xschemas=\$VAR_$database_excludeschemas"
    for xschema in $xschemas
    do
       dumpCmd="$dumpCmd --exclude-schema=$xschema"
    done
    eval "schemas=\$VAR_$database_schemas"
+   if [ -n "$schemas" ] && [ "$VAR_BLOBS" != "no" ]
+   then
+      dumpCmd="$dumpCmd --blobs"
+   fi
    for schema in $schemas
    do
       dumpCmd="$dumpCmd --schema=$schema"
@@ -57,6 +66,9 @@ do
       do
          dumpCmd="$dumpCmd --table=$table"
       done
+   done
+   eval "$dumpCmd"
+done
             /usr/local/bin/pg_dump -U $VAR_LINUX_USER -p $VAR_PORT -N 'public' -N '*_' --exclude-table-data='*.*_' -Z 9 $i > "$BACKUPDIR/$i.sql.gz"
    pg_dump -U postgres -p 5432 -c -t 'layer_styles' -Z 9 $i > "$BACKUPDIR/$i-layer_styles.sql.gz"
 done
