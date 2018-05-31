@@ -11,11 +11,13 @@ COPY --from=pg /usr/lib/libsasl2* /usr/local/lib/
 COPY ./start /start
 COPY ./backup/scripts /backup/scripts
 
-RUN ln /bin/busybox /usr/local/bin/tail \
+RUN sleep 1 \
+ && ln /bin/busybox /usr/local/bin/tail \
  && sleep 1 \
  && ln /bin/busybox /usr/local/bin/date \
  && sleep 1 \
- && ln /bin/busybox /usr/local/bin/gzip
+ && ln /bin/busybox /usr/local/bin/gzip \
+ && sleep 1
 
 ENV VAR_LINUX_USER="postgres" \
 #    VAR_FINAL_COMAND="/usr/local/bin/tail -f /dev/null" \
