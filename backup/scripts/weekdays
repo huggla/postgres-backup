@@ -5,9 +5,21 @@ set -e +a +m +s +i -f
 local day="$(/usr/local/bin/date +%a)"
 local backupdir="$VAR_BACKUP_DIR/weekdays/$day"
 local IFS=$(echo -en "\n\b,")
+local schemas=""
+local tables=""
+local dumpConst="/usr/local/bin/pg_dump -U $VAR_LINUX_USER -p $VAR_PORT"
+local dumpCmd=""
 for database in $VAR_DATABASES
 do
-   pg_dump -U $VAR_LINUX_USER -p $VAR_PORT -c -N 'public' -N '*_' --exclude-table-data='*.*_' -Z 9 $i > "$BACKUPDIR/$i.sql.gz"
+   dumpCmd="$dumpConst  
+   eval "schemas=\$VAR_$database_schemas"
+   if [ -n "$schemas" ]
+   for schema in $schemas
+   do
+      eval "tables=\$VAR_$database_$schema_tables"
+      for table in $tables
+      do
+         /usr/local/bin/pg_dump -U $VAR_LINUX_USER -p $VAR_PORT -N 'public' -N '*_' --exclude-table-data='*.*_' -Z 9 $i > "$BACKUPDIR/$i.sql.gz"
    pg_dump -U postgres -p 5432 -c -t 'layer_styles' -Z 9 $i > "$BACKUPDIR/$i-layer_styles.sql.gz"
 done
 pg_dumpall -h localhost -p 5432 -U postgres -w -v --globals-only | gzip -c > "$BACKUPDIR/postgresql-globals.sql.gz"
