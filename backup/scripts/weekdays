@@ -1,15 +1,13 @@
-#!/bin/bash
-# DAILY BACKUPS (five cycling backups)
-export LANG=en_US.UTF-8
-export LC_ALL=en_US.UTF-8
-DAY=`date +%a`
-BACKUPDIR="/mnt/sbkbackup/daily/$DAY"
+#!/bin/sh
+# Weekday backup (five cycling backups)
+set -e +a +m +s +i -f
 
-# Postgis
-db=( geodata )
-for i in "${db[@]}"
+local day="$(/usr/local/bin/date +%a)"
+local backupdir="$VAR_BACKUP_DIR/weekdays/$day"
+local IFS=$(echo -en "\n\b,")
+for database in $VAR_DATABASES
 do
-   pg_dump -U postgres -p 5432 -c -N 'public' -N '*_' --exclude-table-data='*.*_' -Z 9 $i > "$BACKUPDIR/$i.sql.gz"
+   pg_dump -U $VAR_LINUX_USER -p $VAR_PORT -c -N 'public' -N '*_' --exclude-table-data='*.*_' -Z 9 $i > "$BACKUPDIR/$i.sql.gz"
    pg_dump -U postgres -p 5432 -c -t 'layer_styles' -Z 9 $i > "$BACKUPDIR/$i-layer_styles.sql.gz"
 done
 pg_dumpall -h localhost -p 5432 -U postgres -w -v --globals-only | gzip -c > "$BACKUPDIR/postgresql-globals.sql.gz"
