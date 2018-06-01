@@ -8,20 +8,18 @@ writeCrontab(){
    local IFS=$(echo -en "\n\b")
    local tmpFile="$(mktemp)"
    local -
-   set +f
-   /bin/chown $VAR_LINUX_USER /backup/scripts/*
-   /bin/chmod u+x,o= /backup/scripts/*
-   set -f
+   /bin/chown $VAR_LINUX_USER "$VAR_BACKUP_DIR"
+   /bin/chmod -R u+x,go= /backup_scripts
    cronVars="$(set | /bin/grep "VAR_cron_")"
    for cronVar in $cronVars
    do
       name=${cronVar%%=*}
       cron="$(removeSingleQuotes ${cronVar#*=})"
-      echo "$cron /backup/scripts/$name" >> "$tmpFile"
+      echo "$cron /backup_scripts/$name" >> "$tmpFile"
    done
-   /usr/bin/crontab -u $VAR_LINUX_USER "$tmpFile"
+   /usr/bin/crontab -u root "$tmpFile"
    /bin/rm "$tmpFile"
-   /usr/bin/crontab -u $VAR_LINUX_USER -l
+   /usr/bin/crontab -u root -l
 }
 
 if [ "$isFirstRun" == "true" ]
