@@ -12,8 +12,7 @@ COPY ./start /start
 COPY ./backup_scripts /backup_scripts
 
 ENV VAR_LINUX_USER="postgres" \
-    VAR_FINAL_COMAND="read" \
-#    VAR_FINAL_COMAND="/backup/scripts/weekdays" \
+    VAR_FINAL_COMMAND="read" \
     VAR_cron_weekdays="0 21 * * 1-5" \
     VAR_cron_weekly="0 19 * * 5" \
     VAR_cron_monthly="0 17 1 * *" \
