@@ -18,7 +18,7 @@ weekdayBackup(){
    local format=""
    local jobs=""
    local delimiter=""
-   /bin/mkdir -m 400 -p "$backupDir"
+   /bin/mkdir -m 600 -p "$backupDir"
    /bin/chown $VAR_LINUX_USER "$backupDir"
    if [ "$VAR_DUMP_GLOBALS" == "yes" ]
    then
