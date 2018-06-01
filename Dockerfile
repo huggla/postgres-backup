@@ -9,6 +9,7 @@ COPY --from=pg /usr/lib/libldap* /usr/local/lib/
 COPY --from=pg /usr/lib/liblber* /usr/local/lib/
 COPY --from=pg /usr/lib/libsasl2* /usr/local/lib/
 COPY ./start /start
+COPY ./bin/pause /usr/local/bin/pause
 COPY ./backup_scripts /backup_scripts
 
 ENV VAR_LINUX_USER="postgres" \
