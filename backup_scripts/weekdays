@@ -84,6 +84,7 @@ weekdayBackup(){
          done
       done
    done
+   IFS=$IFS_bak
    if [ -n "$dumpCmd" ]
    then
       execCmdAsLinuxUser "$dumpCmd"
