@@ -18,10 +18,9 @@ writeCrontab(){
       cron="$(removeSingleQuotes ${cronVar#*=})"
       echo "$cron /backup_scripts/$name" >> "$tmpFile"
    done
-   /bin/chown $VAR_LINUX_USER "$tmpFile"
-   /usr/bin/crontab -u $VAR_LINUX_USER "$tmpFile"
+   /usr/bin/crontab -u root "$tmpFile"
    /bin/rm -f "$tmpFile"
-   /usr/bin/crontab -u $VAR_LINUX_USER -l
+   /usr/bin/crontab -u root -l
 }
 
 if [ "$isFirstRun" == "true" ]
