@@ -5,88 +5,88 @@ set -e +a +m +s +i -f
 . /start/functions/execCmd
 
 weekdayBackup(){
-local day="$(/bin/date +%a)"
-local backupDir="$VAR_BACKUP_DIR/weekdays/$day"
-local IFS=$(echo -en "\n\b,")
-local xschemas=""
-local schemas=""
-local xtables=""
-local tables=""
-local dumpCmd=""
-local clean=""
-local format=""
-local jobs=""
-local delimiter=""
-/bin/mkdir -p "$backupDir"
-if [ "$VAR_DUMP_GLOBALS" == "yes" ]
-then
-   /usr/bin/env -i /usr/local/bin/pg_dumpall --host=$VAR_HOST --port=$VAR_PORT --username=$VAR_LINUX_USER --globals-only | /usr/local/bin/gzip -c > "$backupDir/postgresql-globals.sql.gz"
-   /bin/chown $VAR_LINUX_USER "$backupDir/postgresql-globals.sql.gz"
-fi
-for database in $VAR_DATABASES
-do
-   dumpCmd="$dumpCmd $delimiter /usr/local/bin/pg_dump --host=$VAR_HOST --port=$VAR_PORT --username=$VAR_LINUX_USER --dbname=$database"
-   delimiter='&&'
-   eval "format=\$VAR_$database_format"
-   if [ -z "$format" ]
+   local day="$(/bin/date +%a)"
+   local backupDir="$VAR_BACKUP_DIR/weekdays/$day"
+   local IFS=$(echo -en "\n\b,")
+   local xschemas=""
+   local schemas=""
+   local xtables=""
+   local tables=""
+   local dumpCmd=""
+   local clean=""
+   local format=""
+   local jobs=""
+   local delimiter=""
+   /bin/mkdir -p "$backupDir"
+   if [ "$VAR_DUMP_GLOBALS" == "yes" ]
    then
-      format=$VAR_FORMAT
+      /usr/bin/env -i /usr/local/bin/pg_dumpall --host=$VAR_HOST --port=$VAR_PORT --username=$VAR_LINUX_USER --globals-only | /usr/local/bin/gzip -c > "$backupDir/postgresql-globals.sql.gz"
+      /bin/chown $VAR_LINUX_USER "$backupDir/postgresql-globals.sql.gz"
    fi
-   dumpCmd="$dumpCmd --format=$format --file=$backupDir/$database"
-   if [ "$format" == "directory" ]
-   then
-      dumpCmd="$dumpCmd --compress=$VAR_COMPRESS"
-      eval "jobs=\$VAR_$database_jobs"
-      if [ -z "$jobs" ]
-      then
-         jobs=$VAR_JOBS
-      fi
-      dumpCmd="$dumpCmd --jobs=$jobs"
-   elif [ "$format" == "plain" ]
-   then
-      dumpCmd="$dumpCmd.sql --compress=$VAR_COMPRESS"
-   fi
-   eval "clean=\$VAR_$database_clean"
-   if [ "$clean" != "no" ]
-   then
-      if [ "$clean" == "yes" ] || [ "$VAR_CLEAN" == "yes" ]
-      then
-         dumpCmd="$dumpCmd --clean"
-      fi
-   fi
-   if [ "$VAR_SCHEMA_ONLY" == "yes" ]
-   then
-      dumpCmd="$dumpCmd --schema-only"
-   fi
-   eval "xschemas=\$VAR_$database_excludeschemas"
-   for xschema in $xschemas
+   for database in $VAR_DATABASES
    do
-      dumpCmd="$dumpCmd --exclude-schema=$xschema"
+      dumpCmd="$dumpCmd $delimiter /usr/local/bin/pg_dump --host=$VAR_HOST --port=$VAR_PORT --username=$VAR_LINUX_USER --dbname=$database"
+      delimiter='&&'
+      eval "format=\$VAR_$database_format"
+      if [ -z "$format" ]
+      then
+         format=$VAR_FORMAT
+      fi
+      dumpCmd="$dumpCmd --format=$format --file=$backupDir/$database"
+      if [ "$format" == "directory" ]
+      then
+         dumpCmd="$dumpCmd --compress=$VAR_COMPRESS"
+         eval "jobs=\$VAR_$database_jobs"
+         if [ -z "$jobs" ]
+         then
+            jobs=$VAR_JOBS
+         fi
+         dumpCmd="$dumpCmd --jobs=$jobs"
+      elif [ "$format" == "plain" ]
+      then
+         dumpCmd="$dumpCmd.sql --compress=$VAR_COMPRESS"
+      fi
+      eval "clean=\$VAR_$database_clean"
+      if [ "$clean" != "no" ]
+      then
+         if [ "$clean" == "yes" ] || [ "$VAR_CLEAN" == "yes" ]
+         then
+            dumpCmd="$dumpCmd --clean"
+         fi
+      fi
+      if [ "$VAR_SCHEMA_ONLY" == "yes" ]
+      then
+         dumpCmd="$dumpCmd --schema-only"
+      fi
+      eval "xschemas=\$VAR_$database_excludeschemas"
+      for xschema in $xschemas
+      do
+         dumpCmd="$dumpCmd --exclude-schema=$xschema"
+      done
+      eval "schemas=\$VAR_$database_schemas"
+      if [ -n "$schemas" ] && [ "$VAR_BLOBS" != "no" ]
+      then
+         dumpCmd="$dumpCmd --blobs"
+      fi
+      for schema in $schemas
+      do
+         dumpCmd="$dumpCmd --schema=$schema"
+         eval "xtables=\$VAR_$database_$schema_excludetables"
+         for xtable in $xtables
+         do
+            dumpCmd="$dumpCmd --exclude-table=$xtable"
+         done
+         eval "tables=\$VAR_$database_$schema_tables"
+         for table in $tables
+         do
+            dumpCmd="$dumpCmd --table=$table"
+         done
+      done
    done
-   eval "schemas=\$VAR_$database_schemas"
-   if [ -n "$schemas" ] && [ "$VAR_BLOBS" != "no" ]
+   if [ -n "$dumpCmd" ]
    then
-      dumpCmd="$dumpCmd --blobs"
+      execCmdAsLinuxUser "$dumpCmd"
    fi
-   for schema in $schemas
-   do
-      dumpCmd="$dumpCmd --schema=$schema"
-      eval "xtables=\$VAR_$database_$schema_excludetables"
-      for xtable in $xtables
-      do
-         dumpCmd="$dumpCmd --exclude-table=$xtable"
-      done
-      eval "tables=\$VAR_$database_$schema_tables"
-      for table in $tables
-      do
-         dumpCmd="$dumpCmd --table=$table"
-      done
-   done
-done
-if [ -n "$dumpCmd" ]
-then
-   execCmdAsLinuxUser "$dumpCmd"
-fi
 }
 
 weekdayBackup
