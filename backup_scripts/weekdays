@@ -4,6 +4,7 @@ set -e +a +m +s +i -f
 
 . /start/functions/execCmd
 . /start/functions/runCmd
+echo ". /start/functions/trim"
 
 weekdayBackup(){
    local day="$(/bin/date +%a)"
