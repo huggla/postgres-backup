@@ -17,6 +17,7 @@ local clean=""
 local format=""
 local jobs=""
 local delimiter=""
+/bin/mkdir -p "$backupDir"
 if [ "$VAR_DUMP_GLOBALS" == "yes" ]
 then
    /usr/bin/env -i /usr/local/bin/pg_dumpall --host=$VAR_HOST --port=$VAR_PORT --username=$VAR_LINUX_USER --globals-only | /usr/local/bin/gzip -c > "$backupDir/postgresql-globals.sql.gz"
