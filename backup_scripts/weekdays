@@ -2,6 +2,8 @@
 # Weekday backup (five cycling backups)
 set -e +a +m +s +i -f
 
+. /start/functions/execCmd
+
 weekdayBackup(){
 local day="$(/usr/local/bin/date +%a)"
 local backupDir="$VAR_BACKUP_DIR/weekdays/$day"
@@ -72,11 +74,11 @@ do
          dumpCmd="$dumpCmd --table=$table"
       done
    done
-   eval "$dumpCmd"
+   execCmdAsLinuxUser "$dumpCmd"
 done
 if [ "$VAR_DUMP_GLOBALS" == "yes" ]
 then
-   /usr/local/bin/pg_dumpall --host=$VAR_HOST --port=$VAR_PORT --username=$VAR_LINUX_USER --globals-only | /usr/local/bin/gzip -c > "$backupDir/postgresql-globals.sql.gz"
+   execCmdAsLinuxUser "/usr/local/bin/pg_dumpall --host=$VAR_HOST --port=$VAR_PORT --username=$VAR_LINUX_USER --globals-only | /usr/local/bin/gzip -c > \"$backupDir/postgresql-globals.sql.gz\""
 fi
 }
 
