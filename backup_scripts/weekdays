@@ -20,7 +20,7 @@ weekdayBackup(){
    /bin/mkdir -p "$backupDir"
    if [ "$VAR_DUMP_GLOBALS" == "yes" ]
    then
-      /usr/bin/env -i /usr/local/bin/pg_dumpall --host=$VAR_HOST --port=$VAR_PORT --username=$VAR_LINUX_USER --globals-only | /usr/local/bin/gzip -c > "$backupDir/postgresql-globals.sql.gz"
+      /usr/bin/env -i /usr/local/bin/pg_dumpall --host=$VAR_HOST --port=$VAR_PORT --username=$VAR_LINUX_USER --globals-only | /bin/gzip -c > "$backupDir/postgresql-globals.sql.gz"
       /bin/chown $VAR_LINUX_USER "$backupDir/postgresql-globals.sql.gz"
    fi
    for database in $VAR_DATABASES
