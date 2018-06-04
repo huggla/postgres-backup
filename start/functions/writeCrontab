@@ -1,0 +1,20 @@
+writeCrontab(){
+   local IFS=$(echo -en "\n\b")
+   local tmpFile="$(mktemp)"
+   local name=""
+   local cron=""
+   /bin/chown $VAR_LINUX_USER "$VAR_BACKUP_DIR"
+   /bin/chmod o= "$VAR_BACKUP_DIR"
+   /bin/chmod -R u+x,go= /backup_scripts
+   local cronVars="$(set | /bin/grep "VAR_cron_")"
+   for cronVar in $cronVars
+   do
+      name=${cronVar%%=*}
+      name=${name#VAR_cron_}
+      cron="$(removeSingleQuotes ${cronVar#*=})"
+      echo "$cron /backup_scripts/$name" >> "$tmpFile"
+   done
+   /usr/bin/crontab -u root "$tmpFile"
+   /bin/rm -f "$tmpFile"
+   /usr/bin/crontab -u root -l
+}
