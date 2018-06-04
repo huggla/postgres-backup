@@ -16,7 +16,7 @@ ENV VAR_LINUX_USER="postgres" \
     VAR_FINAL_COMMAND="/usr/local/bin/pause" \
     VAR_cron_weekdays="0 21 * * 1-5" \
     VAR_cron_weekly="0 19 * * 5" \
-#    VAR_cron_monthly="0 17 1 * *" \
+    VAR_cron_monthly="0 17 1 * *" \
     VAR_BACKUP_DIR="/pgbackup" \
     VAR_DATABASES="postgres" \
     VAR_PORT="5432" \
@@ -25,6 +25,7 @@ ENV VAR_LINUX_USER="postgres" \
     VAR_COMPRESS="9" \
     VAR_DUMP_GLOBALS="yes" \
     VAR_weekdays="/bin/date +%a" \
-    VAR_weekly="(( $(date +%d) + 6 ) / 7)"
+    VAR_weekly="(( $(/bin/date +%d) + 6 ) / 7)" \
+    VAR_monthly="/bin/date +%b"
 
 USER starter
