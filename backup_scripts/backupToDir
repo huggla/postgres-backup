@@ -8,7 +8,7 @@ IFS_bak=$IFS
 . /start/functions/execCmd
 . /start/functions/execCmdAsLinuxUser
 . /start/functions/trim
-backupDir="$1"
+eval "backupDir=\"$1\""
 IFS=$(echo -en "\n\b,")
 delimiter=""
 /bin/mkdir -m 700 -p "$backupDir"
