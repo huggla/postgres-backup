@@ -15,7 +15,7 @@ COPY ./backup_scripts /backup_scripts
 ENV VAR_LINUX_USER="postgres" \
     VAR_FINAL_COMMAND="/usr/local/bin/pause" \
     VAR_cron_weekdays="0 21 * * 1-5" \
-#    VAR_cron_weekly="0 19 * * 5" \
+    VAR_cron_weekly="0 19 * * 5" \
 #    VAR_cron_monthly="0 17 1 * *" \
     VAR_BACKUP_DIR="/pgbackup" \
     VAR_DATABASES="postgres" \
@@ -24,6 +24,7 @@ ENV VAR_LINUX_USER="postgres" \
     VAR_JOBS="1" \
     VAR_COMPRESS="9" \
     VAR_DUMP_GLOBALS="yes" \
-    VAR_weekdays="/bin/date +%a"
+    VAR_weekdays="/bin/date +%a" \
+    VAR_weekly="(( $(date +%d) + 6 ) / 7)"
 
 USER starter
