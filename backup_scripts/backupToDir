@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -e +a +m +s +i -f
-readonly IFS_bak=$IFS
+IFS_bak=$IFS
 . /start/functions/runCmd
 . /start/functions/runCmdAsLinuxUser
 . /start/functions/runBinCmdAsLinuxUser
