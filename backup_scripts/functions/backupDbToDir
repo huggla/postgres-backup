@@ -6,81 +6,91 @@ backupDbToDir(){
    . /start/functions/execCmdAsLinuxUser
    . /start/functions/trim
    local backupDir="$1"
+   local IFS_bak=$IFS
    local IFS=$(echo -en "\n\b,")
-delimiter=""
-/bin/mkdir -m 700 -p "$backupDir"
-/bin/chown $VAR_LINUX_USER "$backupDir"
-if [ "$VAR_DUMP_GLOBALS" == "yes" ]
-then
-   runBinCmdAsLinuxUser "/usr/local/bin/pg_dumpall --host=$VAR_HOST --port=$VAR_PORT --username=$VAR_LINUX_USER --globals-only | /bin/gzip -c > $backupDir/postgresql-globals.sql.gz"
-fi
-for database in $VAR_DATABASES
-do
-   database="$(trim $database)"
-   dumpCmd="$dumpCmd $delimiter /usr/local/bin/pg_dump --host=$VAR_HOST --port=$VAR_PORT --username=$VAR_LINUX_USER --dbname=$database"
-   delimiter='&&'
-   eval "format=\$VAR_$database_format"
-   if [ -z "$format" ]
+   local xschemas=""
+   local schemas=""
+   local xtables=""
+   local tables=""
+   local dumpCmd=""
+   local clean=""
+   local format=""
+   local jobs=""
+   local delimiter=""
+   /bin/mkdir -m 700 -p "$backupDir"
+   /bin/chown $VAR_LINUX_USER "$backupDir"
+   if [ "$VAR_DUMP_GLOBALS" == "yes" ]
    then
-      format=$VAR_FORMAT
+      runBinCmdAsLinuxUser "/usr/local/bin/pg_dumpall --host=$VAR_HOST --port=$VAR_PORT --username=$VAR_LINUX_USER --globals-only | /bin/gzip -c > $backupDir/postgresql-globals.sql.gz"
    fi
-   dumpCmd="$dumpCmd --format=$format --file=$backupDir/$database"
-   if [ "$format" == "directory" ]
-   then
-      dumpCmd="$dumpCmd --compress=$VAR_COMPRESS"
-      eval "jobs=\$VAR_$database_jobs"
-      if [ -z "$jobs" ]
-      then
-         jobs=$VAR_JOBS
-      fi
-      dumpCmd="$dumpCmd --jobs=$jobs"
-   elif [ "$format" == "plain" ]
-   then
-      dumpCmd="$dumpCmd.sql --compress=$VAR_COMPRESS"
-   fi
-   eval "clean=\$VAR_$database_clean"
-   if [ "$clean" != "no" ]
-   then
-      if [ "$clean" == "yes" ] || [ "$VAR_CLEAN" == "yes" ]
-      then
-         dumpCmd="$dumpCmd --clean"
-      fi
-   fi
-   if [ "$VAR_SCHEMA_ONLY" == "yes" ]
-   then
-      dumpCmd="$dumpCmd --schema-only"
-   fi
-   eval "xschemas=\$VAR_$database_excludeschemas"
-   for xschema in $xschemas
+   for database in $VAR_DATABASES
    do
-      xschema="$(trim $xschema)"
-      dumpCmd="$dumpCmd --exclude-schema=$xschema"
+      database="$(trim $database)"
+      dumpCmd="$dumpCmd $delimiter /usr/local/bin/pg_dump --host=$VAR_HOST --port=$VAR_PORT --username=$VAR_LINUX_USER --dbname=$database"
+      delimiter='&&'
+      eval "format=\$VAR_$database_format"
+      if [ -z "$format" ]
+      then
+         format=$VAR_FORMAT
+      fi
+      dumpCmd="$dumpCmd --format=$format --file=$backupDir/$database"
+      if [ "$format" == "directory" ]
+      then
+         dumpCmd="$dumpCmd --compress=$VAR_COMPRESS"
+         eval "jobs=\$VAR_$database_jobs"
+         if [ -z "$jobs" ]
+         then
+            jobs=$VAR_JOBS
+         fi
+         dumpCmd="$dumpCmd --jobs=$jobs"
+      elif [ "$format" == "plain" ]
+      then
+         dumpCmd="$dumpCmd.sql --compress=$VAR_COMPRESS"
+      fi
+      eval "clean=\$VAR_$database_clean"
+      if [ "$clean" != "no" ]
+      then
+         if [ "$clean" == "yes" ] || [ "$VAR_CLEAN" == "yes" ]
+         then
+            dumpCmd="$dumpCmd --clean"
+         fi
+      fi
+      if [ "$VAR_SCHEMA_ONLY" == "yes" ]
+      then
+         dumpCmd="$dumpCmd --schema-only"
+      fi
+      eval "xschemas=\$VAR_$database_excludeschemas"
+      for xschema in $xschemas
+      do
+         xschema="$(trim $xschema)"
+         dumpCmd="$dumpCmd --exclude-schema=$xschema"
+      done
+      eval "schemas=\$VAR_$database_schemas"
+      if [ -n "$schemas" ] && [ "$VAR_BLOBS" != "no" ]
+      then
+         dumpCmd="$dumpCmd --blobs"
+      fi
+      for schema in $schemas
+      do
+         schema="$(trim schema)"
+         dumpCmd="$dumpCmd --schema=$schema"
+         eval "xtables=\$VAR_$database_$schema_excludetables"
+         for xtable in $xtables
+         do
+            xtable="$(trim $xtable)"
+            dumpCmd="$dumpCmd --exclude-table=$xtable"
+         done
+         eval "tables=\$VAR_$database_$schema_tables"
+         for table in $tables
+         do
+            table="$(trim $table)"
+            dumpCmd="$dumpCmd --table=$table"
+         done
+      done
    done
-   eval "schemas=\$VAR_$database_schemas"
-   if [ -n "$schemas" ] && [ "$VAR_BLOBS" != "no" ]
+   IFS=$IFS_bak
+   if [ -n "$dumpCmd" ]
    then
-      dumpCmd="$dumpCmd --blobs"
+      execCmdAsLinuxUser "$dumpCmd"
    fi
-   for schema in $schemas
-   do
-      schema="$(trim schema)"
-      dumpCmd="$dumpCmd --schema=$schema"
-      eval "xtables=\$VAR_$database_$schema_excludetables"
-      for xtable in $xtables
-      do
-         xtable="$(trim $xtable)"
-         dumpCmd="$dumpCmd --exclude-table=$xtable"
-      done
-      eval "tables=\$VAR_$database_$schema_tables"
-      for table in $tables
-      do
-         table="$(trim $table)"
-         dumpCmd="$dumpCmd --table=$table"
-      done
-   done
-done
-IFS=$IFS_bak
-if [ -n "$dumpCmd" ]
-then
-   execCmdAsLinuxUser "$dumpCmd"
-fi
+}
