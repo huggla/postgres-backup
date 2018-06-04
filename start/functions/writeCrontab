@@ -15,7 +15,7 @@ writeCrontab(){
       name=${name#VAR_cron_}
       cron="$(removeSingleQuotes ${cronVar#*=})"
       eval "backupVar=\"$VAR_$name\""
-      eval "backupDir='$VAR_BACKUP_DIR/$name/$backupVar'"
+      eval "backupDir='$VAR_BACKUP_DIR/$name/\$($backupVar)'"
       echo "$cron /backup_scripts/backupToDir $backupDir" >> "$tmpFile"
    done
    /usr/bin/crontab -u root "$tmpFile"
