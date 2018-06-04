@@ -23,6 +23,7 @@ ENV VAR_LINUX_USER="postgres" \
     VAR_FORMAT="directory" \
     VAR_JOBS="1" \
     VAR_COMPRESS="9" \
-    VAR_DUMP_GLOBALS="yes"
+    VAR_DUMP_GLOBALS="yes" \
+    VAR_weekdays="/bin/date +%a"
 
 USER starter
