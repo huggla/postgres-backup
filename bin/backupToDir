@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 set -e +a +m +s +i -f
 IFS_bak=$IFS
