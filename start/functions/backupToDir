@@ -2,12 +2,9 @@
 
 set -e +a +m +s +i -f
 IFS_bak=$IFS
-. /start/functions/runCmd
-. /start/functions/runCmdAsLinuxUser
-. /start/functions/runBinCmdAsLinuxUser
-. /start/functions/execCmd
-. /start/functions/execCmdAsLinuxUser
-. /start/functions/trim
+[ $(type -t runBinCmdAsLinuxUser) ] || . /start/functions/runBinCmdAsLinuxUser
+[ $(type -t execCmdAsLinuxUser) ] || . /start/functions/execCmdAsLinuxUser
+[ $(type -t trim) ] || . /start/functions/trim
 backupDir="$1"
 IFS=$(echo -en "\n\b,")
 delimiter=""
