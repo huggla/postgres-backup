@@ -9,4 +9,4 @@ if [ "$isFirstRun" == "true" ]
 then
    writeCrontab
 fi
-execCmd $VAR_FINAL_COMMAND
+exec $VAR_FINAL_COMMAND
