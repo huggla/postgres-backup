@@ -9,5 +9,4 @@ if [ "$isFirstRun" == "true" ]
 then
    writeCrontab
 fi
-command="/usr/sbin/crond -s -n"
-execCmd $command
+execCmd $VAR_FINAL_COMMAND
