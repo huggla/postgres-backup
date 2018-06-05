@@ -12,7 +12,6 @@ COPY ./start /start
 COPY ./bin /usr/local/bin
 
 ENV VAR_LINUX_USER="postgres" \
-    VAR_FINAL_COMMAND="/usr/local/bin/pause" \
     VAR_cron_weekdays="0 21 * * 1-5" \
     VAR_cron_weekly="0 19 * * 5" \
     VAR_cron_monthly="0 17 1 * *" \
