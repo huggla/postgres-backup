@@ -3,12 +3,10 @@ set -e +a +m +s +i -f
 
 IFS_bak=$IFS
 cd "$VAR_BACKUP_DIR"
-[ $(type -t readEnvironmentVars) ] || . /start/functions/readEnvironmentVars
 [ $(type -t runBinCmdAsLinuxUser) ] || . /start/functions/runBinCmdAsLinuxUser
 [ $(type -t execCmdAsLinuxUser) ] || . /start/functions/execCmdAsLinuxUser
 [ $(type -t trim) ] || . /start/functions/trim
 backupDir="$1"
-readEnvironmentVars
 IFS=$(echo -en "\n\b,")
 delimiter=""
 /bin/mkdir -m 700 -p "$backupDir"
