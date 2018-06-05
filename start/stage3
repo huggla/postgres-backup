@@ -9,4 +9,4 @@ if [ "$isFirstRun" == "true" ]
 then
    writeCrontab
 fi
-execCmd "/usr/sbin/crond -f -d 8"
+exec /usr/sbin/crond -f -d 8
