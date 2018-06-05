@@ -1,6 +1,6 @@
 #!/bin/sh
-
 set -e +a +m +s +i -f
+
 IFS_bak=$IFS
 [ $(type -t runBinCmdAsLinuxUser) ] || . /start/functions/runBinCmdAsLinuxUser
 [ $(type -t execCmdAsLinuxUser) ] || . /start/functions/execCmdAsLinuxUser
