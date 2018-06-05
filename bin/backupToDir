@@ -1,8 +1,8 @@
 #!/bin/sh
+cd "$VAR_BACKUP_DIR"
 set -e +a +m +s +i -f
 
 IFS_bak=$IFS
-cd "$VAR_BACKUP_DIR"
 [ $(type -t readEnvironmentVars) ] || . /start/functions/readEnvironmentVars
 [ $(type -t runBinCmdAsLinuxUser) ] || . /start/functions/runBinCmdAsLinuxUser
 [ $(type -t execCmdAsLinuxUser) ] || . /start/functions/execCmdAsLinuxUser
