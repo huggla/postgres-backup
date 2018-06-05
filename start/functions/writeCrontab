@@ -20,4 +20,5 @@ writeCrontab(){
    /usr/bin/crontab -u root "$tmpFile"
    /bin/rm -f "$tmpFile"
    /usr/bin/crontab -u root -l
+   echo
 }
