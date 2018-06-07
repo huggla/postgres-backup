@@ -2,6 +2,18 @@
 cd "$VAR_BACKUP_DIR"
 set -e +a +m +s +i -f
 
+linkPreviousDuplicatesOfBackupFile(){
+   local backupFile=$1
+   local backupFileName="$(/usr/bin/basename "$backupFile")"
+   local backupDir="$(/usr/bin/dirname "$backupFile")"
+   local previousBackupDir="$(( "$(/usr/bin/dirname "$backupDir")" - 1 ))"
+   local previousBackupFile="$previousBackupDir/$backupFileName"
+   if [ "$(/bin/stat -c %s "$backupFile")" == "$(/bin/stat -c %s "$previousBackupFile")" ]
+   then
+      /bin/ln -f "$previousBackupFile" "$backupFile"
+   fi
+}
+
 IFS_bak=$IFS
 [ $(type -t readEnvironmentVars) ] || . /start/functions/readEnvironmentVars
 [ $(type -t runBinCmdAsLinuxUser) ] || . /start/functions/runBinCmdAsLinuxUser
@@ -15,7 +27,10 @@ delimiter=""
 /bin/chown $VAR_LINUX_USER "$backupDir"
 if [ "$VAR_DUMP_GLOBALS" == "yes" ]
 then
-   runBinCmdAsLinuxUser "/usr/local/bin/pg_dumpall --host=$VAR_HOST --port=$VAR_PORT --username=$VAR_LINUX_USER --globals-only | /bin/gzip -c > $backupDir/postgresql-globals.sql.gz"
+   globalsBackupFileName="postgresql-globals.sql.gz"
+   globalsBackupFile="$backupDir/$globalsBackupFileName"
+   runBinCmdAsLinuxUser "/usr/local/bin/pg_dumpall --host=$VAR_HOST --port=$VAR_PORT --username=$VAR_LINUX_USER --globals-only | /bin/gzip -c > \"$globalsBackupFile\""
+   linkPreviousDuplicatesOfBackupFile "$globalsBackupFile"
 fi
 for database in $VAR_DATABASES
 do
