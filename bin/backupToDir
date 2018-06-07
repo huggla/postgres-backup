@@ -10,7 +10,7 @@ linkPreviousDuplicatesOfFilesInBackupDir(){
    do
       if [ -f "$backupObj" ]
       then
-         linkPreviousDuplicatesOfBackupFile "$backupObj"
+         linkPreviousDuplicateOfBackupFile "$backupObj"
       elif [ -d "$backupObj" ]
       then
          linkPreviousDuplicatesOfFilesInBackupDir "$backupObj"
