@@ -100,5 +100,13 @@ done
 IFS=$IFS_bak
 if [ -n "$dumpCmd" ]
 then
-   execCmdAsLinuxUser "$dumpCmd"
+   eval "$dumpCmd"
+   set +f
+   for backupFile in "$backupDir/"*
+   do
+      if [ -f "$backupFile" ]
+      then
+         linkPreviousDuplicatesOfBackupFile "$backupFile"
+      fi
+   done
 fi
