@@ -109,4 +109,5 @@ then
          linkPreviousDuplicatesOfBackupFile "$backupFile"
       fi
    done
+   set -f
 fi
