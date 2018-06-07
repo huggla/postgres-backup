@@ -10,27 +10,22 @@ linkPreviousDuplicatesOfFilesInBackupDir(){
    do
       if [ -f "$backupObj" ]
       then
-         linkPreviousDuplicateOfBackupFile "$backupObj"
+         linkPreviousDuplicateOfBackupFile "$backupObj" "$2"
       elif [ -d "$backupObj" ]
       then
-         linkPreviousDuplicatesOfFilesInBackupDir "$backupObj"
+         linkPreviousDuplicatesOfFilesInBackupDir "$backupObj" "$2"
       fi
    done
 }
 
 linkPreviousDuplicateOfBackupFile(){
    local backupFile=$1
-   local backupFileName="$(/usr/bin/basename "$backupFile")"
-   local backupDir="$(/usr/bin/dirname "$backupFile")"
-   local backupDirName="$(/usr/bin/basename "$backupDir")"
-   [ -z "${backupDirName##*[!0-9]*}" ]
-   then
-      backupDir="$(/usr/bin/dirname "$backupDir")"
-      backupDirName="$(/usr/bin/basename "$backupDir")"
-   fi
-   local previousBackupDirName="$(( $backupDirName - 1 ))"
-   local previousBackupDir="$backupDir/$previousBackupDirName"
-   local previousBackupFile="$previousBackupDir/$backupFileName"
+   local backupIdDir=$2
+   local pathOverflow="${backupFile#$backupIdDir/}"
+   local backupIdParent="$(/usr/bin/dirname "$backupIdDir")"
+   local backupId="$(/usr/bin/basename "$backupIdDir")"
+   local previousBackupId="$(( $backupId - 1 ))"
+   local previousBackupFile="$backupIdParent/$previousBackupId/$pathOverflow"
    if [ -f "$backupFile" ] && [ -f "$previousBackupFile" ]
    then
       if [ "$(/bin/stat -c %s "$backupFile")" == "$(/bin/stat -c %s "$previousBackupFile")" ]
@@ -128,6 +123,6 @@ then
    eval "$dumpCmd"
    if [ "$VAR_LINK_DUPLICATES" == "yes" ]
    then
-      linkPreviousDuplicatesOfFilesInBackupDir "$backupDir"
+      linkPreviousDuplicatesOfFilesInBackupDir "$backupDir" "$backupDir"
    fi
 fi
