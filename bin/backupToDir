@@ -1,8 +1,24 @@
 #!/bin/sh
-cd "$VAR_BACKUP_DIR"
+cd /
 set -e +a +m +s +i -f
 
-linkPreviousDuplicatesOfBackupFile(){
+linkPreviousDuplicatesOfFilesInBackupDir(){
+   local backupObj=""
+   local -
+   set +f
+   for backupObj in "$1/"*
+   do
+      if [ -f "$backupObj" ]
+      then
+         linkPreviousDuplicatesOfBackupFile "$backupObj"
+      elif [ -d "$backupObj" ]
+      then
+         linkPreviousDuplicatesOfFilesInBackupDir "$backupObj"
+      fi
+   done
+}
+
+linkPreviousDuplicateOfBackupFile(){
    local backupFile=$1
    local backupFileName="$(/usr/bin/basename "$backupFile")"
    local backupDir="$(/usr/bin/dirname "$backupFile")"
@@ -30,7 +46,6 @@ then
    globalsBackupFileName="postgresql-globals.sql.gz"
    globalsBackupFile="$backupDir/$globalsBackupFileName"
    runBinCmdAsLinuxUser "/usr/local/bin/pg_dumpall --host=$VAR_HOST --port=$VAR_PORT --username=$VAR_LINUX_USER --globals-only | /bin/gzip -c > \"$globalsBackupFile\""
-   linkPreviousDuplicatesOfBackupFile "$globalsBackupFile"
 fi
 for database in $VAR_DATABASES
 do
@@ -101,13 +116,8 @@ IFS=$IFS_bak
 if [ -n "$dumpCmd" ]
 then
    eval "$dumpCmd"
-   set +f
-   for backupFile in "$backupDir/"*
-   do
-      if [ -f "$backupFile" ]
-      then
-         linkPreviousDuplicatesOfBackupFile "$backupFile"
-      fi
-   done
-   set -f
+   if [ "$VAR_LINK_DUPLICATES" == "yes" ]
+   then
+      linkPreviousDuplicatesOfFilesInBackupDir "$backupDir"
+   fi
 fi
