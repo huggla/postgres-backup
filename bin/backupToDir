@@ -22,11 +22,17 @@ linkPreviousDuplicateOfBackupFile(){
    local backupFile=$1
    local backupFileName="$(/usr/bin/basename "$backupFile")"
    local backupDir="$(/usr/bin/dirname "$backupFile")"
-   local previousBackupDir="$(( "$(/usr/bin/basename "$backupDir")" - 1 ))"
+   local backupDirName="$(/usr/bin/basename "$backupDir")"
+   echo "$backupDirName"
+   local previousBackupDir="$(( $backupDirName - 1 ))"
+   echo "$previousBackupDir"
    local previousBackupFile="$previousBackupDir/$backupFileName"
-   if [ "$(/bin/stat -c %s "$backupFile")" == "$(/bin/stat -c %s "$previousBackupFile")" ]
+   if [ -f "$backupFile" ] && [ -f "$previousBackupFile" ]
    then
-      /bin/ln -f "$previousBackupFile" "$backupFile"
+      if [ "$(/bin/stat -c %s "$backupFile")" == "$(/bin/stat -c %s "$previousBackupFile")" ]
+      then
+         /bin/ln -f "$previousBackupFile" "$backupFile"
+      fi
    fi
 }
 
