@@ -2,7 +2,7 @@
 cd /
 set -e +a +m +s +i -f
 
-linkPreviousDuplicatesOfFilesInBackupDir(){
+deletePreviousDuplicatesOfFilesInBackupDir(){
    local backupObj=""
    local -
    set +f
@@ -10,15 +10,15 @@ linkPreviousDuplicatesOfFilesInBackupDir(){
    do
       if [ -f "$backupObj" ]
       then
-         linkPreviousDuplicateOfBackupFile "$backupObj" "$2"
+         deletePreviousDuplicateOfBackupFile "$backupObj" "$2"
       elif [ -d "$backupObj" ]
       then
-         linkPreviousDuplicatesOfFilesInBackupDir "$backupObj" "$2"
+         deletePreviousDuplicatesOfFilesInBackupDir "$backupObj" "$2"
       fi
    done
 }
 
-linkPreviousDuplicateOfBackupFile(){
+deletePreviousDuplicateOfBackupFile(){
    local backupFile=$1
    local backupIdDir=$2
    local pathOverflow="${backupFile#$backupIdDir/}"
@@ -30,7 +30,7 @@ linkPreviousDuplicateOfBackupFile(){
    then
       if [ "$(/bin/stat -c %s "$backupFile")" == "$(/bin/stat -c %s "$previousBackupFile")" ]
       then
-         /bin/ln -f "$previousBackupFile" "$backupFile"
+         /bin/rm "$previousBackupFile"
       fi
    fi
 }
@@ -123,6 +123,6 @@ then
    eval "$dumpCmd"
    if [ "$VAR_LINK_DUPLICATES" == "yes" ]
    then
-      linkPreviousDuplicatesOfFilesInBackupDir "$backupDir" "$backupDir"
+      deletePreviousDuplicatesOfFilesInBackupDir "$backupDir" "$backupDir"
    fi
 fi
