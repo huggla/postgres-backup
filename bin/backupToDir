@@ -23,9 +23,13 @@ linkPreviousDuplicateOfBackupFile(){
    local backupFileName="$(/usr/bin/basename "$backupFile")"
    local backupDir="$(/usr/bin/dirname "$backupFile")"
    local backupDirName="$(/usr/bin/basename "$backupDir")"
-   echo "$backupDirName"
-   local previousBackupDir="$(( $backupDirName - 1 ))"
-   echo "$previousBackupDir"
+   [ -z "${backupDirName##*[!0-9]*}" ]
+   then
+      backupDir="$(/usr/bin/dirname "$backupDir")"
+      backupDirName="$(/usr/bin/basename "$backupDir")"
+   fi
+   local previousBackupDirName="$(( $backupDirName - 1 ))"
+   local previousBackupDir="$backupDir/$previousBackupDirName"
    local previousBackupFile="$previousBackupDir/$backupFileName"
    if [ -f "$backupFile" ] && [ -f "$previousBackupFile" ]
    then
