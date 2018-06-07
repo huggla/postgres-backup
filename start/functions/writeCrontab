@@ -7,6 +7,7 @@ writeCrontab(){
    local backupDir=""
    /bin/chown $VAR_LINUX_USER "$VAR_BACKUP_DIR"
    /bin/chmod o= "$VAR_BACKUP_DIR"
+   local cronVar=""
    local cronVars="$(set | /bin/grep "VAR_cron_")"
    for cronVar in $cronVars
    do
