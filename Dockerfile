@@ -23,8 +23,8 @@ ENV VAR_LINUX_USER="postgres" \
     VAR_JOBS="1" \
     VAR_COMPRESS="9" \
     VAR_DUMP_GLOBALS="yes" \
-    VAR_weekdays="/bin/date +%a" \
+    VAR_weekdays="/bin/date +%u" \
     VAR_weekly="(( $(/bin/date +%d) + 6 ) / 7)" \
-    VAR_monthly="/bin/date +%b"
+    VAR_monthly="/bin/date +%m"
 
 USER starter
