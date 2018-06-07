@@ -125,4 +125,5 @@ then
    then
       deletePreviousDuplicatesOfFilesInBackupDir "$backupDir" "$backupDir"
    fi
+   /bin/ln -sf "$backupDir" "$(/usr/bin/dirname "$backupDir")/latest"
 fi
