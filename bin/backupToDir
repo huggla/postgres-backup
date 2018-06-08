@@ -94,7 +94,7 @@ commandForBackupToDir(){
 recursiveDeleteFileDuplicates(){
    local -
    local dir="."
-   if [ -n $1 ]
+   if [ -n "$1" ]
    then
       dir=$1
    fi
