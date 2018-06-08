@@ -102,5 +102,6 @@ then
          fi
       done
    fi
-   /bin/ln -sf ./ ../latest
+   cd ../
+   /bin/ln -sf "$(/usr/bin/basename "$backupDir")" "latest"
 fi
