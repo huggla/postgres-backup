@@ -92,12 +92,14 @@ commandForBackupToDir(){
 }
 
 recursiveDeleteFileDuplicates(){
+   local -
    local dir="."
    if [ -n $1 ]
    then
       dir=$1
    fi
    local backupFile=""
+   set +f
    for backupFile in "$dir/"*
    do
       if [ -f "$backupFile" ]
