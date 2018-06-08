@@ -118,6 +118,8 @@ linkDirAsLatest(){
 [ $(type -t execCmdAsLinuxUser) ] || . /start/functions/execCmdAsLinuxUser
 [ $(type -t trim) ] || . /start/functions/trim
 
+#-----------------------------------------------------------------------------
+
 backupDir="$1"
 readEnvironmentVars
 /bin/mkdir -m 700 -p "$backupDir"
