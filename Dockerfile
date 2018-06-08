@@ -23,8 +23,8 @@ ENV VAR_LINUX_USER="postgres" \
 #    VAR_cron_weekdays="0 21 * * 1-5" \
 #    VAR_cron_weekly="0 19 * * 5" \
 #    VAR_cron_monthly="0 17 1 * *" \
-#    VAR_weekdays="/bin/date +%u" \
+#    VAR_weekdays="/bin/date +%a" \
 #    VAR_weekly="(( $(/bin/date +%d) + 6 ) / 7)" \
-#    VAR_monthly="/bin/date +%m"
+#    VAR_monthly="/bin/date +%b"
 
 USER starter
