@@ -13,18 +13,18 @@ COPY ./bin /usr/local/bin
 
 ENV VAR_LINUX_USER="postgres" \
     VAR_FINAL_COMMAND="/usr/sbin/crond -f -d 8" \
-    VAR_cron_weekdays="0 21 * * 1-5" \
-    VAR_cron_weekly="0 19 * * 5" \
-    VAR_cron_monthly="0 17 1 * *" \
     VAR_BACKUP_DIR="/pgbackup" \
     VAR_DATABASES="postgres" \
     VAR_PORT="5432" \
     VAR_FORMAT="directory" \
     VAR_JOBS="1" \
     VAR_COMPRESS="9" \
-    VAR_DUMP_GLOBALS="yes" \
-    VAR_weekdays="/bin/date +%u" \
-    VAR_weekly="(( $(/bin/date +%d) + 6 ) / 7)" \
-    VAR_monthly="/bin/date +%m"
+    VAR_DUMP_GLOBALS="yes"
+#    VAR_cron_weekdays="0 21 * * 1-5" \
+#    VAR_cron_weekly="0 19 * * 5" \
+#    VAR_cron_monthly="0 17 1 * *" \
+#    VAR_weekdays="/bin/date +%u" \
+#    VAR_weekly="(( $(/bin/date +%d) + 6 ) / 7)" \
+#    VAR_monthly="/bin/date +%m"
 
 USER starter
