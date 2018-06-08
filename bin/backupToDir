@@ -89,7 +89,7 @@ if [ -n "$dumpCmd" ]
 then
    eval "$dumpCmd"
    cd "$backupDir"
-   if [ "$VAR_LINK_DUPLICATES" == "yes" ]
+   if [ "$VAR_LINK_DUPLICATES" == "yes" ] && [ -d "../latest" ]
    then
       for backupFile in *
       do
