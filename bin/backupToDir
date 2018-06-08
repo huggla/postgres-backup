@@ -2,39 +2,6 @@
 cd /
 set -e +a +m +s +i -f
 
-deletePreviousDuplicatesOfFilesInBackupDir(){
-   local backupObj=""
-   local -
-   set +f
-   for backupObj in "$1/"*
-   do
-      if [ -f "$backupObj" ]
-      then
-         deletePreviousDuplicateOfBackupFile "$backupObj" "$2"
-      elif [ -d "$backupObj" ]
-      then
-         deletePreviousDuplicatesOfFilesInBackupDir "$backupObj" "$2"
-      fi
-   done
-}
-
-deletePreviousDuplicateOfBackupFile(){
-   local backupFile=$1
-   local backupIdDir=$2
-   local pathOverflow="${backupFile#$backupIdDir/}"
-   local backupIdParent="$(/usr/bin/dirname "$backupIdDir")"
-   local backupId="$(/usr/bin/basename "$backupIdDir")"
-   local previousBackupId="$(( $backupId - 1 ))"
-   local previousBackupFile="$backupIdParent/$previousBackupId/$pathOverflow"
-   if [ -f "$backupFile" ] && [ -f "$previousBackupFile" ]
-   then
-      if [ "$(/bin/stat -c %s "$backupFile")" == "$(/bin/stat -c %s "$previousBackupFile")" ]
-      then
-         /bin/rm "$previousBackupFile"
-      fi
-   fi
-}
-
 IFS_bak=$IFS
 [ $(type -t readEnvironmentVars) ] || . /start/functions/readEnvironmentVars
 [ $(type -t runBinCmdAsLinuxUser) ] || . /start/functions/runBinCmdAsLinuxUser
@@ -121,9 +88,19 @@ IFS=$IFS_bak
 if [ -n "$dumpCmd" ]
 then
    eval "$dumpCmd"
+   cd "$backupDir"
    if [ "$VAR_LINK_DUPLICATES" == "yes" ]
    then
-      deletePreviousDuplicatesOfFilesInBackupDir "$backupDir" "$backupDir"
+      for backupFile in *
+      do
+         if [ -f "$backupFile" ]
+         then
+            if [ ! "$(/usr/bin/cmp "$backupFile" "../latest/$backupFile")" ]
+            then
+               /bin/rm "../latest/$backupFile"
+            fi
+         fi
+      done
    fi
-   /bin/ln -sf "$backupDir" "$(/usr/bin/dirname "$backupDir")/latest"
+   /bin/ln -sf ./ ../latest
 fi
