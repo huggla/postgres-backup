@@ -91,10 +91,14 @@ commandForBackupToDir(){
    echo "$dumpCmd"
 }
 
-deleteFileDuplicatesOfDir(){
-   cd "$1"
+recursiveDeleteFileDuplicates(){
+   local dir="."
+   if [ -n $1 ]
+   then
+      dir=$1
+   fi
    local backupFile=""
-   for backupFile in *
+   for backupFile in "$dir/"*
    do
       if [ -f "$backupFile" ]
       then
@@ -102,6 +106,10 @@ deleteFileDuplicatesOfDir(){
          then
             /bin/rm "../latest/$backupFile"
          fi
+      fi
+      elif [ -d "$backupFile" ]
+      then
+         recursiveDeleteFileDuplicates "$backupFile"
       fi
    done
 }
@@ -134,7 +142,8 @@ then
    eval "$backupCmd"
    if [ "$VAR_DELETE_DUPLICATES" == "yes" ] && [ -d "$backupDir/../latest" ]
    then
-      deleteFileDuplicatesOfDir "$backupDir"
+      cd "$backupDir"
+      recursiveDeleteFileDuplicates
    fi
    linkDirAsLatest "$backupDir"
 fi
