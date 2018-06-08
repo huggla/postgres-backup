@@ -132,7 +132,8 @@ backupCmd="$(commandForBackupToDir "$backupDir")"
 if [ -n "$backupCmd" ]
 then
    eval "$backupCmd"
-   if [ "$VAR_DELETE_DUPLICATES" == "yes" ] && [ -d "$backupDir/../latest" ]
+   cd "$backupDir/.."
+   if [ "$VAR_DELETE_DUPLICATES" == "yes" ] && [ -d "./latest" ]
    then
       deleteFileDuplicatesOfDir "$backupDir"
    fi
