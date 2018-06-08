@@ -106,7 +106,6 @@ recursiveDeleteFileDuplicates(){
          then
             /bin/rm "../latest/$backupFile"
          fi
-      fi
       elif [ -d "$backupFile" ]
       then
          recursiveDeleteFileDuplicates "$backupFile"
