@@ -109,8 +109,8 @@ deleteFileDuplicatesOfDir(){
 linkDirAsLatest(){
    local backupDir=$1
    cd "$backupDir/.."
-   rm ./latest
-   /bin/ln -sf "./$(/usr/bin/basename "$backupDir")" "./latest"
+   rm -f ./latest
+   /bin/ln -s "./$(/usr/bin/basename "$backupDir")" "./latest"
 }
 
 [ $(type -t readEnvironmentVars) ] || . /start/functions/readEnvironmentVars
@@ -132,8 +132,7 @@ backupCmd="$(commandForBackupToDir "$backupDir")"
 if [ -n "$backupCmd" ]
 then
    eval "$backupCmd"
-   cd "$backupDir/.."
-   if [ "$VAR_DELETE_DUPLICATES" == "yes" ] && [ -d "./latest" ]
+   if [ "$VAR_DELETE_DUPLICATES" == "yes" ] && [ -d "$backupDir/../latest" ]
    then
       deleteFileDuplicatesOfDir "$backupDir"
    fi
