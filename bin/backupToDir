@@ -109,6 +109,7 @@ deleteFileDuplicatesOfDir(){
 linkDirAsLatest(){
    local backupDir=$1
    cd "$backupDir/.."
+   rm ./latest
    /bin/ln -sf "./$(/usr/bin/basename "$backupDir")" "./latest"
 }
 
