@@ -141,7 +141,9 @@ fi
 backupCmd="$(commandForBackupToDir "$backupDir")"
 if [ -n "$backupCmd" ]
 then
+   set +f
    eval "$backupCmd"
+   set -f
    if [ "$VAR_DELETE_DUPLICATES" == "yes" ] && [ -d "$backupDir/../latest" ]
    then
       cd "$backupDir"
