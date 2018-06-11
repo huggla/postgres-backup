@@ -10,7 +10,7 @@ commandForBackupToDir(){
    local backupDir=$1
    local IFS=$(echo -en "\n\b,")
    local database=""
-   local dumpCmd="/bin/rm -rf \"$backupDir/\"*"
+   local dumpCmd="find \"$backupDir/\" -mindepth 1 -maxdepth 1 -type d -exec rm -r {} ;"
    local delimiter='&&'
    local format=""
    local file=""
