@@ -1,5 +1,5 @@
-FROM huggla/postgres-alpine as pg
-FROM huggla/alpine
+FROM huggla/postgres-alpine:20180611 as pg
+FROM huggla/alpine:20180611
 
 USER root
 
