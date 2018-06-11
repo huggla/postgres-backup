@@ -10,9 +10,10 @@ commandForBackupToDir(){
    local backupDir=$1
    local IFS=$(echo -en "\n\b,")
    local database=""
-   local dumpCmd=""
-   local delimiter=""
+   local dumpCmd="/bin/rm -rf \"$backupDir/\"*"
+   local delimiter='&&'
    local format=""
+   local file=""
    local jobs=""
    local clean=""
    local xschemas=""
@@ -26,14 +27,14 @@ commandForBackupToDir(){
    for database in $VAR_DATABASES
    do
       database="$(trim $database)"
-      dumpCmd="$dumpCmd $delimiter /usr/local/bin/pg_dump --host=$VAR_HOST --port=$VAR_PORT --username=$VAR_LINUX_USER --dbname=$database"
-      delimiter='&&'
+      file="$backupDir/$database"
+      dumpCmd="$dumpCmd $delimiter /usr/local/bin/pg_dump --host=$VAR_HOST --port=$VAR_PORT --username=$VAR_LINUX_USER --dbname=$database --file=$file"
       eval "format=\$VAR_$database_format"
       if [ -z "$format" ]
       then
          format=$VAR_FORMAT
       fi
-      dumpCmd="$dumpCmd --format=$format --file=$backupDir/$database"
+      dumpCmd="$dumpCmd --format=$format"
       if [ "$format" == "directory" ]
       then
          dumpCmd="$dumpCmd --compress=$VAR_COMPRESS"
