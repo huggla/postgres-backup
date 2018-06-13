@@ -33,17 +33,17 @@ A tiny and simple Docker image for backing up Postgresql.
 
 ## Cron examples
 ```
-VAR_weekdays="/bin/date +%a"
+VAR_weekdays="/bin/date +%a"  
 VAR_cron_weekdays="0 21 * * 1-5"
 ```
 
 ```
-VAR_weekly="(( $(/bin/date +%d) + 6 ) / 7)"
+VAR_weekly="(( $(/bin/date +%d) + 6 ) / 7)"  
 VAR_cron_weekly="0 19 * * 5"
 ```
 
 ```
-VAR_monthly="/bin/date +%b"
+VAR_monthly="/bin/date +%b"  
 VAR_cron_monthly="0 17 1 * *"
 ```
 
