@@ -11,9 +11,7 @@ COPY --from=pg /usr/lib/liblber* /usr/local/lib/
 COPY --from=pg /usr/lib/libsasl2* /usr/local/lib/
 COPY ./bin /usr/local/bin
 
-RUN apk --no-cache add libressl2.7-libcrypto libressl2.7-libssl \
-#libstdc++ musl ncurses-libs zlib
- && ln /usr/bin/mysqldump /usr/local/bin/mysqldump
+RUN apk --no-cache add libressl2.7-libcrypto libressl2.7-libssl
 
 ENV VAR_LINUX_USER="postgres" \
     VAR_PORT="5432" \
