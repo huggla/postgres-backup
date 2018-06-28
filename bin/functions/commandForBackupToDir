@@ -16,6 +16,10 @@ commandForBackupToDir(){
    local xtable=""
    local tables=""
    local table=""
+   if [ "$VAR_DUMP_GLOBALS" == "yes" ]
+   then
+      backupGlobalsToFile "$backupDir/postgresql-globals.sql.gz"
+   fi
    for database in $VAR_DATABASES
    do
       database="$(trim $database)"
