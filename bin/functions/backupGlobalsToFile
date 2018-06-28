@@ -1,0 +1,3 @@
+backupGlobalsToFile(){
+   runBinCmdAsLinuxUser "/usr/local/bin/pg_dumpall --host=$VAR_HOST --port=$VAR_PORT --username=$VAR_LINUX_USER --globals-only | /bin/gzip -c > \"$1\""
+}
