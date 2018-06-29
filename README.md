@@ -7,7 +7,7 @@ A tiny and simple Docker image for backing up Postgresql.
 ### pre-set runtime variables
 * VAR_LINUX_USER (postgres): The Linux/Postgresql user that performs the backup.
 * VAR_FINAL_COMMAND (/usr/sbin/crond -f -d 8): Backups are initiated by crond.
-* VAR_BACKUP_DIR (/pgbackup): Where the backups will be created.
+* VAR_BACKUP_DIR (/backup): Where the backups will be created.
 * VAR_PORT (5432): Database port.
 * VAR_FORMAT (directory): Pg_dump format.
 * VAR_JOBS (1): Number of parallel backup jobs. Only used if VAR_FORMAT="directory".
