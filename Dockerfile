@@ -6,7 +6,8 @@ COPY --from=stage1 /usr/local/lib /rootfs/usr/local/
 COPY --from=stage1 /usr/lib/libldap* /usr/lib/liblber* /usr/lib/libsasl2* /rootfs/usr/local/lib/
 COPY ./rootfs /rootfs
 
-RUN tar -cvp -f /apks-files.tar $(apk --no-cache --quiet manifest libressl2.7-libcrypto libressl2.7-libssl | awk -F "  " '{print $2;}') \
+RUN apk --no-cache add libressl2.7-libssl \
+ && tar -cvp -f /apks-files.tar $(apk --no-cache --quiet manifest libressl2.7-libcrypto libressl2.7-libssl | awk -F "  " '{print $2;}') \
  && tar -xvp -f /apks-files.tar -C /rootfs/
 
 FROM huggla/backup-alpine:20180921-edge
