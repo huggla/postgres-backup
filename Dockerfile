@@ -2,8 +2,8 @@ FROM huggla/postgres-alpine:20180921-edge as stage1
 FROM huggla/alpine-slim:20180921-edge as stage2
 
 COPY --from=stage1 /usr/local/bin/pg_dump* /usr/local/bin/pg_restore /rootfs/usr/local/bin/
-COPY --from=stage1 /usr/local/lib /rootfs/usr/local/
-COPY --from=stage1 /usr/lib/libldap* /usr/lib/liblber* /usr/lib/libsasl2* /rootfs/usr/local/lib/
+COPY --from=stage1 /usr/local/lib/* /rootfs/usr/lib/
+COPY --from=stage1 /usr/lib/libldap* /usr/lib/liblber* /usr/lib/libsasl2* /usr/lib/libpq* /rootfs/usr/lib/
 COPY ./rootfs /rootfs
 
 RUN apk --no-cache add libressl2.7-libssl \
