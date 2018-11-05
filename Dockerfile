@@ -1,3 +1,16 @@
+ARG TAG="20181101-edge"
+ARG RUNDEPS="postgresql-client"
+ARG EXECUTABLES="/usr/bin/pg_dumpall, /usr/bin/pg_basebackup, /usr/bin/pg_dump"
+
+#---------------Don't edit----------------
+FROM ${CONTENTIMAGE1:-scratch} as content1
+FROM ${CONTENTIMAGE2:-scratch} as content2
+FROM ${BASEIMAGE:-huggla/base:$TAG} as base
+FROM huggla/build:$TAG as build
+FROM ${BASEIMAGE:-huggla/base:$TAG} as image
+COPY --from=build /imagefs /
+#-----------------------------------------
+
 FROM huggla/postgres-alpine:20180921-edge as stage1
 FROM huggla/alpine-slim:20180921-edge as stage2
 
