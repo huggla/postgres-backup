@@ -1,8 +1,8 @@
 ARG TAG="20181106-edge"
 ARG BUILDDEPS="postgresql-client"
 ARG BUILDCMDS=\
-"   cp -a /buildfs/usr/bin/pg_dump* /imagefs/usr/bin/ "\
-"&& cp -a /buildfs/usr/lib/libldap* /buildfs/usr/lib/liblber* /buildfs/usr/lib/libsasl2* /buildfs/usr/lib/libpq* /imagefs/usr/lib/"
+"   cp -a /usr/bin/pg_dump* /imagefs/usr/bin/ "\
+"&& cp -a /usr/lib/libldap* /usr/lib/liblber* /usr/lib/libsasl2* /usr/lib/libpq* /imagefs/usr/lib/"
 
 ARG EXECUTABLES="/usr/bin/pg_dumpall /usr/bin/pg_dump"
 
