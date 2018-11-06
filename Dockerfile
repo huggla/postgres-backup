@@ -1,8 +1,8 @@
 ARG TAG="20181106-edge"
-ARG RUNDEPS="postgresql-client"
-ARG EXECUTABLES="/usr/bin/pg_dumpall /usr/bin/pg_dump"
+ARG BUILDDEPS="postgresql-client
 ARG BUILDCMDS=\
-"   ls -laR /imagefs"
+"   cp -a ./usr/bin/pg_dump* /imagefs/usr/bin/"
+ARG EXECUTABLES="/usr/bin/pg_dumpall /usr/bin/pg_dump"
 
 #---------------Don't edit----------------
 FROM ${CONTENTIMAGE1:-scratch} as content1
