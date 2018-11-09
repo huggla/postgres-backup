@@ -1,4 +1,4 @@
-ARG TAG="20181106-edge"
+ARG TAG="20181108-edge"
 ARG BUILDDEPS="postgresql-client"
 ARG BUILDCMDS=\
 "   mkdir -p /imagefs/usr/bin /imagefs/usr/lib "\
