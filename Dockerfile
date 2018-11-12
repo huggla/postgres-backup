@@ -18,9 +18,9 @@ COPY --from=build /imagefs /
 
 ENV VAR_LINUX_USER="postgres" \
     VAR_PORT="5432" \
-    VAR_FORMAT="directory" \
+    VAR_FORMAT="custom" \
     VAR_JOBS="1" \
-    VAR_COMPRESS="6" \
+    VAR_COMPRESS="9" \
     VAR_DUMP_GLOBALS="yes"
 
 #---------------Don't edit----------------
