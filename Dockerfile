@@ -1,10 +1,10 @@
 ARG TAG="20181108-edge"
+ARG RUNDEPS="libpq libldap
 ARG BUILDDEPS="postgresql-client"
 ARG BUILDCMDS=\
 "   mkdir -p /imagefs/usr/bin /imagefs/usr/lib "\
 "&& cp -a /usr/bin/pg_dump* /imagefs/usr/bin/ "\
-"&& cp -a /usr/lib/libldap* /usr/lib/liblber* /usr/lib/libsasl2* /usr/lib/libpq* /imagefs/usr/lib/"
-
+"&& cp -a /usr/lib/libsasl2* /imagefs/usr/lib/"
 ARG EXECUTABLES="/usr/bin/pg_dumpall /usr/bin/pg_dump"
 
 #---------------Don't edit----------------
