@@ -23,7 +23,7 @@ ENV VAR_LINUX_USER="postgres" \
     VAR_JOBS="1" \
     VAR_COMPRESS="9" \
     VAR_DUMP_GLOBALS="yes" \
-    VAR_KEEP_CAPS="cap_setgid,cap_setuid"
+    VAR_KEEP_CAPS="cap_setgid"
 
 #---------------Don't edit----------------
 USER starter
