@@ -1,4 +1,4 @@
-ARG TAG="20181108-edge"
+ARG TAG="20181113-edge"
 ARG BASEIMAGE="huggla/backup-alpine:$TAG"
 ARG RUNDEPS="libpq libldap"
 ARG BUILDDEPS="postgresql-client"
