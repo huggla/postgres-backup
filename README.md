@@ -1,5 +1,3 @@
-**Note! I use Docker latest tag for development, which means that it isn't allways working. Date tags are stable.**
-
 # postgres-backup
 A tiny and simple Docker image for backing up Postgresql.
 
@@ -9,9 +7,9 @@ A tiny and simple Docker image for backing up Postgresql.
 * VAR_FINAL_COMMAND (/usr/sbin/crond -f -d 8): Backups are initiated by crond.
 * VAR_BACKUP_DIR (/backup): Where the backups will be created.
 * VAR_PORT (5432): Database port.
-* VAR_FORMAT (directory): Pg_dump format.
+* VAR_FORMAT (custom): Pg_dump format.
 * VAR_JOBS (1): Number of parallel backup jobs. Only used if VAR_FORMAT="directory".
-* VAR_COMPRESS (6): 0 is no compression, 9 is max compression. For directory and plain formats only.
+* VAR_COMPRESS (9): 0 is no compression, 9 is max compression. For directory and plain formats only.
 * VAR_DUMP_GLOBALS (yes): Dump all postgres globals in a separate file.
 * VAR_DELETE_DUPLICATES (yes): Duplicate files will be deleted from previous backup.
 
