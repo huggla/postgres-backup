@@ -1,6 +1,8 @@
 # postgres-backup
 A tiny and simple Docker image for backing up Postgresql.
 
+20181204: Pg_dump and pg_dumpall from Postgresql 11.1, Apline Edge.
+
 ## Environment variables
 ### pre-set runtime variables
 * VAR_LINUX_USER (postgres): The Linux/Postgresql user that performs the backup.
