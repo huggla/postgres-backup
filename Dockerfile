@@ -1,21 +1,37 @@
-ARG TAG="20181204"
+ARG TAG="20190129"
 ARG BASEIMAGE="huggla/backup-alpine:$TAG"
+ARG MAKEDIRS="/usr/bin /usr/lib"
 ARG RUNDEPS="libpq libldap"
 ARG BUILDDEPS="postgresql-client"
 ARG BUILDCMDS=\
-"   mkdir -p /imagefs/usr/bin /imagefs/usr/lib "\
-"&& cp -a /usr/bin/pg_dump* /imagefs/usr/bin/ "\
+"   cp -a /usr/bin/pg_dump* /imagefs/usr/bin/ "\
 "&& cp -a /usr/lib/libsasl2* /imagefs/usr/lib/"
 ARG EXECUTABLES="/usr/bin/pg_dumpall /usr/bin/pg_dump"
 
-#---------------Don't edit----------------
+#--------Generic template (don't edit)--------
 FROM ${CONTENTIMAGE1:-scratch} as content1
 FROM ${CONTENTIMAGE2:-scratch} as content2
 FROM ${INITIMAGE:-${BASEIMAGE:-huggla/base:$TAG}} as init
-FROM ${BUILDIMAGE:-huggla/build:$TAG} as build
+FROM ${BUILDIMAGE:-huggla/build} as build
 FROM ${BASEIMAGE:-huggla/base:$TAG} as image
+ARG CONTENTSOURCE1
+ARG CONTENTSOURCE1="${CONTENTSOURCE1:-/}"
+ARG CONTENTDESTINATION1
+ARG CONTENTDESTINATION1="${CONTENTDESTINATION1:-/buildfs/}"
+ARG CONTENTSOURCE2
+ARG CONTENTSOURCE2="${CONTENTSOURCE2:-/}"
+ARG CONTENTDESTINATION2
+ARG CONTENTDESTINATION2="${CONTENTDESTINATION2:-/buildfs/}"
+ARG CLONEGITSDIR
+ARG DOWNLOADSDIR
+ARG MAKEDIRS
+ARG MAKEFILES
+ARG EXECUTABLES
+ARG STARTUPEXECUTABLES
+ARG EXPOSEFUNCTIONS
 COPY --from=build /imagefs /
-#-----------------------------------------
+ENV VAR_STARTUPEXECUTABLES="$STARTUPEXECUTABLES"
+#---------------------------------------------
 
 ENV VAR_LINUX_USER="postgres" \
     VAR_PORT="5432" \
@@ -24,7 +40,7 @@ ENV VAR_LINUX_USER="postgres" \
     VAR_COMPRESS="9" \
     VAR_DUMP_GLOBALS="yes"
 
-#---------------Don't edit----------------
+#--------Generic template (don't edit)--------
 USER starter
 ONBUILD USER root
-#-----------------------------------------
+#---------------------------------------------
