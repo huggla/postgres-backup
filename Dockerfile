@@ -1,4 +1,4 @@
-ARG TAG="20190129"
+ARG TAG="20190206"
 ARG BASEIMAGE="huggla/backup-alpine:$TAG"
 ARG MAKEDIRS="/usr/bin /usr/lib"
 ARG RUNDEPS="libpq libldap"
@@ -30,7 +30,6 @@ ARG EXECUTABLES
 ARG STARTUPEXECUTABLES
 ARG EXPOSEFUNCTIONS
 COPY --from=build /imagefs /
-ENV VAR_STARTUPEXECUTABLES="$STARTUPEXECUTABLES"
 #---------------------------------------------
 
 ENV VAR_LINUX_USER="postgres" \
